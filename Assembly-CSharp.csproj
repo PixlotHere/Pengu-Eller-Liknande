@@ -59,7 +59,7 @@
     <Compile Include="Assets\Scrfipts\BoatScript.cs" />
     <Compile Include="Assets\Scrfipts\MouseScript.cs" />
     <Compile Include="Assets\Scrfipts\Cam.cs" />
-    <Compile Include="Assets\Scrfipts\ToolController.cs" />
+    <Compile Include="Assets\Scrfipts\PickUpDrop.cs" />
     <Compile Include="Assets\Scrfipts\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>

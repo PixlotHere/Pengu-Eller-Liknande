@@ -23,9 +23,12 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
     void Update()
-    {   
+    {
+        float x = 0;
+        float y = 0;
         if (Health >= 0)
         {
+            
 
             #region playerMovement
             #region rotation
@@ -51,8 +54,24 @@ public class PlayerController : MonoBehaviour
             }
 
             // Player Movement
-            float x = Input.GetAxis("Horizontal");
-            float y = Input.GetAxis("Vertical");
+            
+            if (Input.GetKey(KeyCode.W))
+            {
+                y += 1;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                x -= 1;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                y -= 1;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                x += 1;
+            }
+
 
             #region Vehicle
             if (Transport != null && Transport.tag == "Vehicle" && Input.GetKeyDown(KeyCode.E) && !onVehicle)
@@ -91,6 +110,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.tag == "Vehicle")
         Transport = collision;
     }
     private void OnTriggerExit2D(Collider2D collision)
