@@ -9,11 +9,9 @@ public class PickUpDrop : MonoBehaviour
     public Collider2D item;
     public Transform leftHand;
     public Transform rightHand;
-    float useLeft;
-    float useRight;
-    public float useToolTime = 2;
     private float pickupDelay;
     public float WaitTime = 0.5f;
+    private WeaponController weaponScript;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,19 +25,6 @@ public class PickUpDrop : MonoBehaviour
         {
             pickupDelay -= Time.deltaTime;
         }
-        //Tool In Use Timer --
-        if (useRight >= 0)
-        {
-            useRight -= Time.deltaTime;
-            if (holdingRight != null)
-            {
-
-            }
-        }
-        if (useLeft >= 0)
-        {
-            useLeft -= Time.deltaTime;
-        }
 
         //Pickup
         if (holdingLeft == null && Input.GetMouseButtonDown(0) && (item != holdingRight) && Input.GetKey(KeyCode.LeftControl) && pickupDelay <= 0)
@@ -51,6 +36,7 @@ public class PickUpDrop : MonoBehaviour
                 holdingLeft.transform.position = leftHand.position;
                 holdingLeft.transform.rotation = leftHand.rotation;
                 item.gameObject.transform.parent = transform;
+                item.GetComponent<WeaponController>().heldHand = leftHand;
             }
         }
         if (holdingRight == null && Input.GetMouseButtonDown(1) && (item != holdingLeft) && Input.GetKey(KeyCode.LeftControl) && pickupDelay <= 0)
@@ -62,6 +48,7 @@ public class PickUpDrop : MonoBehaviour
                 holdingRight.transform.position = rightHand.position;
                 holdingRight.transform.rotation = rightHand.rotation;
                 item.gameObject.transform.parent = transform;
+                item.GetComponent<WeaponController>().heldHand = rightHand;
             }
         }
         //Dropp
@@ -69,22 +56,24 @@ public class PickUpDrop : MonoBehaviour
         {
             pickupDelay = WaitTime;
             holdingLeft.transform.parent = null;
+            holdingLeft.GetComponent<WeaponController>().heldHand = null;
             holdingLeft = null;
         }
         if (holdingRight != null && Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl) && pickupDelay <= 0)
         {
             pickupDelay = WaitTime;
             holdingRight.transform.parent = null;
+            holdingRight.GetComponent<WeaponController>().heldHand = null;
             holdingRight = null;
         }
         //Use Tool
-        if (holdingLeft != null && Input.GetMouseButtonDown(0) && useLeft <= 0)
+        if (holdingLeft != null && Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl))
         {
-            useLeft = useToolTime;
+                holdingLeft.GetComponent<WeaponController>().Attack();
         }
-        if (holdingRight != null && Input.GetMouseButtonDown(1) && useRight <= 0)
+        if (holdingRight != null && Input.GetMouseButton(1) && !Input.GetKey(KeyCode.LeftControl))
         {
-            useRight = useToolTime;
+                holdingRight.GetComponent<WeaponController>().Attack();
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)

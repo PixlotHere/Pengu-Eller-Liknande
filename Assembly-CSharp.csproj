@@ -61,6 +61,7 @@
     <Compile Include="Assets\Scrfipts\Cam.cs" />
     <Compile Include="Assets\Scrfipts\PickUpDrop.cs" />
     <Compile Include="Assets\Scrfipts\PlayerController.cs" />
+    <Compile Include="Assets\Scrfipts\WeaponController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
