@@ -32,20 +32,22 @@ public class WeaponController : MonoBehaviour
     {
         if (swingTimer < useSpeed)
         {
-            swingTimer += Time.deltaTime;
-        }
+            swingTimer += Time.fixedDeltaTime;
+        }   
         if (!attacking)
         {
             Collide = null;
         }
+ 
+
+
+
     }
     public void Attack()
     {
         if (transform.parent != null)
         {
-            attacking = true;
             Swing();
-
         }
     }
 
@@ -54,9 +56,10 @@ public class WeaponController : MonoBehaviour
 
         if (swingTimer >= useSpeed)
         {
+            attacking = true;
             swingTimer = 0;
             CalculateDMG();
-            Animate();
+            StartCoroutine(Animate());
         }
 
 
@@ -67,7 +70,7 @@ public class WeaponController : MonoBehaviour
     {
         if (Collide != null)
         {
-            if (Random.Range(1, 100) <= critChance * 100)
+            if (Random.Range(1, 100) <= critChance * 100) //crit
             {
                 return Mathf.RoundToInt(dmg * 1.5f * Random.Range(0.95f, 1.05f));
             }
@@ -83,12 +86,13 @@ public class WeaponController : MonoBehaviour
 
     }
 
-    public void Animate()
+    public IEnumerator Animate()
     {
-        heldHand.GetComponent<Animator>().speed = (0 - useSpeed) * -1;
+        heldHand.GetComponent<Animator>().speed = ((useSpeed - 1) * -1) + 1;
         heldHand.GetComponent<Animator>().SetInteger("useStyle", useStyle);
-            attacking = false;
-        heldHand.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(useSpeed);
+        attacking = false;
+        heldHand.GetComponent<Animator>().SetInteger("useStyle", 0);
     }
 
     private void OnCollision2D(Collision2D collision)

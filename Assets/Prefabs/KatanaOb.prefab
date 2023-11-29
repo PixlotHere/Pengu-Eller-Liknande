@@ -106,10 +106,12 @@ MonoBehaviour:
   critChance: 0.17
   useSpeed: 0.73
   knockBack: 0
+  useStyle: 2
   resource: 0
   ammo: 0
   projectile: 0
   projectileOb: {fileID: 0}
+  attacking: 0
 --- !u!61 &-8733065449387588161
 BoxCollider2D:
   m_ObjectHideFlags: 0

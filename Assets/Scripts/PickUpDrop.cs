@@ -35,7 +35,7 @@ public class PickUpDrop : MonoBehaviour
                 holdingLeft = item.gameObject;
                 holdingLeft.transform.position = leftHand.position;
                 holdingLeft.transform.rotation = leftHand.rotation;
-                item.gameObject.transform.parent = transform;
+                item.gameObject.transform.parent = leftHand;
                 item.GetComponent<WeaponController>().heldHand = leftHand;
             }
         }
@@ -47,7 +47,7 @@ public class PickUpDrop : MonoBehaviour
                 holdingRight = item.gameObject;
                 holdingRight.transform.position = rightHand.position;
                 holdingRight.transform.rotation = rightHand.rotation;
-                item.gameObject.transform.parent = transform;
+                item.gameObject.transform.parent = rightHand;
                 item.GetComponent<WeaponController>().heldHand = rightHand;
             }
         }
@@ -73,7 +73,7 @@ public class PickUpDrop : MonoBehaviour
         }
         if (holdingRight != null && Input.GetMouseButton(1) && !Input.GetKey(KeyCode.LeftControl))
         {
-                holdingRight.GetComponent<WeaponController>().Attack();
+            holdingRight.GetComponent<WeaponController>().Attack();
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
