@@ -773,6 +773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slideLength: 1.5
   slideSpeed: 50
+  terrainGenerator: {fileID: 0}
   moveSpeed: 5
 --- !u!61 &1618730464
 BoxCollider2D:

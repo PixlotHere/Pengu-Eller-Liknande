@@ -17,8 +17,8 @@ public class Cam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize,  zoom * 12 * camSpeed, Time.deltaTime);
+        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize,  zoom * 12, Time.deltaTime);
         Vector2 targetPos = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
-        rb.velocity = (targetPos * 2.5f);
+        rb.velocity = (targetPos * camSpeed * 2.5f);
     }
 }
