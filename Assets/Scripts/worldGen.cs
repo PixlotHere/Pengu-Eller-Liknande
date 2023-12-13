@@ -198,12 +198,18 @@ public class worldGen : MonoBehaviour
         //ChunkCord.y /= chunkSize;
         newTile.transform.parent = worldChunks[Mathf.CeilToInt(ChunkCord.x), Mathf.CeilToInt(ChunkCord.y)].transform;
         
-        newTile.name = "tile";
+        newTile.name = tileSprite.name;
+        newTile.tag = "tile";
         newTile.AddComponent<SpriteRenderer>();
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+        newTile.AddComponent<BoxCollider2D>();
         if (Collide)
         {
-            newTile.AddComponent<BoxCollider2D>();
+            newTile.GetComponent<BoxCollider2D>().isTrigger = false;
+        }
+        else
+        {
+            newTile.GetComponent<BoxCollider2D>().isTrigger = true;
         }
         if (Random.Range(0,2) == 1)
         {
@@ -217,7 +223,6 @@ public class worldGen : MonoBehaviour
         //newTile.transform.parent;
         worldTiles.Add(newTile.transform.position);
     }
-
     public void GenerateNoiseTexture()
     {
         noiseTex = new Texture2D(worldWidth,worldHeight);

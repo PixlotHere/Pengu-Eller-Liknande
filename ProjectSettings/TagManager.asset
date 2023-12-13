@@ -7,6 +7,7 @@ TagManager:
   - Tool
   - Vehicle
   - Mouse
+  - tile
   layers:
   - Default
   - TransparentFX

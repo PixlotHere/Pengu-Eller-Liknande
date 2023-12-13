@@ -7,10 +7,13 @@ public class BoatScript : MonoBehaviour
     public int playerCount = 0;
     private Rigidbody2D rb;
     private Collider2D MouseCollide;
+    public worldGen terrainGenerator;
     private GameObject player;
     private float boatSpeed;
     public float maxSpeed = 7;
     private Vector2 oldDirection;
+
+    private Collider2D tileCollide;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,22 +24,52 @@ public class BoatScript : MonoBehaviour
     void Update()
     {
         Movement();
-        if (player != null)
+        while (transform.position.x > terrainGenerator.worldWidth - 3)
         {
-            Vector3 MousePos = Input.mousePosition;
-            MousePos = Camera.main.ScreenToWorldPoint(MousePos);
-
-            Vector2 direction = new Vector2(MousePos.x - transform.position.x, MousePos.y - transform.position.y);
-            
-
-
-
-
-            if (Input.GetMouseButton(0) && MouseCollide == null)
+            transform.position += Vector3.left * Time.deltaTime;
+        }
+        while (transform.position.y > terrainGenerator.worldHeight - 3)
+        {
+            transform.position += Vector3.down * Time.deltaTime;
+        }
+        while (transform.position.x < 0)
+        {
+            transform.position += Vector3.right * Time.deltaTime;
+        }
+        while (transform.position.y < 0)
+        {
+            transform.position += Vector3.up * Time.deltaTime;
+        }
+            if (player != null)
             {
-                oldDirection = direction.normalized * -1;
-                boatSpeed = maxSpeed;
-                
+
+                Vector3 MousePos = Input.mousePosition;
+                MousePos = Camera.main.ScreenToWorldPoint(MousePos);
+
+                Vector2 direction = new Vector2(MousePos.x - transform.position.x, MousePos.y - transform.position.y);
+
+
+
+
+
+                if (Input.GetMouseButton(0) && MouseCollide == null)
+                {
+                    oldDirection = direction.normalized * -1;
+                    boatSpeed = maxSpeed;
+
+                }
+                else
+                {
+                    if (boatSpeed > 0)
+                    {
+                        boatSpeed -= Time.deltaTime * Mathf.Sqrt(maxSpeed);
+                    }
+                    else if (boatSpeed < 0)
+                    {
+                        boatSpeed = 0;
+                    }
+                }
+
             }
             else
             {
@@ -48,20 +81,13 @@ public class BoatScript : MonoBehaviour
                 {
                     boatSpeed = 0;
                 }
+
             }
-            
-        }
-        else
+        
+        if (tileCollide)
         {
-            if (boatSpeed > 0)
-            {
-                boatSpeed -= Time.deltaTime * Mathf.Sqrt(maxSpeed);
-            }
-            else if (boatSpeed < 0)
-            {
-                boatSpeed = 0;
-            }
-            
+            //båten ska gå sönder
+            Destroy(this.gameObject);
         }
 
         if (playerCount >= 1)
@@ -72,13 +98,21 @@ public class BoatScript : MonoBehaviour
         {
             player = null;
         }
-        
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.name == "Mouse")
         {
             MouseCollide = collision;
+        }
+        if (collision.tag == "tile")
+        {
+            if (collision.name != "Water")
+            {
+                boatSpeed = -boatSpeed;
+                tileCollide = collision;
+            }
         }
 
     }
@@ -87,6 +121,13 @@ public class BoatScript : MonoBehaviour
         if (collision.name == "Mouse")
         {
             MouseCollide = null;
+        }
+        if (collision.tag == "tile")
+        {
+            if (collision.name != "Water")
+            {
+                tileCollide = null;
+            }
         }
     }
 

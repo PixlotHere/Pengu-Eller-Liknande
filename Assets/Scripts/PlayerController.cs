@@ -32,19 +32,19 @@ public class PlayerController : MonoBehaviour
         
         while (transform.position.x > terrainGenerator.worldWidth - 3)
         {
-            transform.position = new Vector2(terrainGenerator.worldWidth - 3, transform.position.y);
+            transform.position += Vector3.left * Time.deltaTime;
         }
         while (transform.position.y > terrainGenerator.worldHeight - 3)
         {
-            transform.position = new Vector2(transform.position.x, terrainGenerator.worldHeight - 3);
+            transform.position += Vector3.down * Time.deltaTime;
         }
         while (transform.position.x < 0)
         {
-            transform.position = new Vector2(0 , transform.position.y);
+            transform.position += Vector3.right * Time.deltaTime;
         }
         while (transform.position.y < 0)
         {
-            transform.position = new Vector2(transform.position.x, 0);
+            transform.position += Vector3.up * Time.deltaTime;
         }
         float x = 0;
         float y = 0;
@@ -98,10 +98,12 @@ public class PlayerController : MonoBehaviour
             #region Vehicle
             if (Transport != null && Transport.tag == "Vehicle" && Input.GetKeyDown(KeyCode.E) && !onVehicle)
             {
-               Camera.main.GetComponent<Cam>().camSpeed = 2;
+               Camera.main.GetComponent<Cam>().zoom = 2;
+                Camera.main.GetComponent<Cam>().camSpeed = 1.5f;
+
                 onVehicle = true;
                 transform.SetParent(Transport.transform);
-               // Transport.GetComponent<BoatScript>().playerCount += 1;
+                Transport.GetComponent<BoatScript>().playerCount += 1;
             }
             if (transform.parent != null && transform.parent.GetComponent<Rigidbody2D>().velocity != new Vector2(0, 0))
             {
@@ -110,8 +112,14 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                
                 rb.velocity = new Vector2(x, y).normalized * moveSpeed + slideTowards * slide * slideSpeed / 10;
                 rb.velocity = new Vector2(Mathf.Round(rb.velocity.x/(moveSpeed/10))*(moveSpeed/10), Mathf.Round(rb.velocity.y/ (moveSpeed / 10)) * (moveSpeed / 10));
+            }
+            if (transform.parent == null)
+            {
+                Camera.main.GetComponent<Cam>().zoom = 1;
+                Camera.main.GetComponent<Cam>().camSpeed = 1;
             }
 
 
@@ -141,7 +149,7 @@ public class PlayerController : MonoBehaviour
         if (collision.tag == "Vehicle" && transform.parent != null)
         {
            Camera.main.GetComponent<Cam>().camSpeed = 1;
-           // transform.parent.GetComponent<BoatScript>().playerCount -= 1;
+            transform.parent.GetComponent<BoatScript>().playerCount -= 1;
             transform.parent = null;
             Transport = null;
             onVehicle = false;
