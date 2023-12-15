@@ -24,12 +24,13 @@ public class WeaponController : MonoBehaviour
     public GameObject projectileOb; //The gameObject of the Projectile
     [Header("Other")]
     public bool attacking = false; //If i am attacking
-    private Collision2D Collide; //Check of the collision.
+    private Collider2D Collide; //Check of the collision.
     // Start is called before the first frame update
     // Update is called once per frame
 
     public void Update()
     {
+        Debug.Log(attacking);
         if (swingTimer < useSpeed)
         {
             swingTimer += Time.fixedDeltaTime;
@@ -58,6 +59,17 @@ public class WeaponController : MonoBehaviour
         {
             attacking = true;
             swingTimer = 0;
+            if (weaponClass == "Mining")
+            {
+                if (Collide.GetComponent<Mining>())
+                {
+                    Collide.GetComponent<Mining>().health -= CalculateDMG();
+                }
+            }
+            else
+            {
+
+            }
             CalculateDMG();
             StartCoroutine(Animate());
         }
@@ -94,16 +106,14 @@ public class WeaponController : MonoBehaviour
         attacking = false;
         heldHand.GetComponent<Animator>().SetInteger("useStyle", 0);
     }
-
-    private void OnCollision2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(attacking)
+        if (attacking)
         {
             Collide = collision;
         }
     }
-
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         Collide = null;
     }

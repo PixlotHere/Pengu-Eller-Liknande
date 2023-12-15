@@ -11,6 +11,8 @@ public class worldGen : MonoBehaviour
     public Sprite sandTreasure;
     public Sprite ice;
     public Sprite iceBrick;
+    public Sprite tree;
+    public Sprite leaf;
 
     [Header("Generation Settings")]
     public int chunkSize = 16;
@@ -36,7 +38,8 @@ public class worldGen : MonoBehaviour
         GenerateNoiseTexture();
         GenerateBiomeTexture();
         createChunks();
-        GenerateTerrain();
+        GenerateBaseTerrain();
+        GenerateSecondTerrain();
     }
 
     // Update is called once per frame
@@ -79,7 +82,7 @@ public class worldGen : MonoBehaviour
 
     }
 
-    public void GenerateTerrain()
+    public void GenerateBaseTerrain()
     {
         for (int x = 1; x < worldWidth; x++)
         {
@@ -89,15 +92,7 @@ public class worldGen : MonoBehaviour
                 {
                     if (tempText.GetPixel(x,y).r > 0.6)//desert
                     {
-                        if (tempText.GetPixel(x,y).g > 0.95f)
-                        {
-                            Debug.Log("Special");
-                            placeTile(sandTreasure, x, y, true);
-                        }
-                        else
-                        {
-                            placeTile(sand, x, y, false);
-                        }
+                        placeTile(sand, x, y, false);
                     }
                     else if (tempText.GetPixel(x, y).r > 0.3f)//StoneLands
                     {
@@ -105,14 +100,77 @@ public class worldGen : MonoBehaviour
                     }
                     else //iceLands
                     {
+                            placeTile(ice, x, y, false);
+                    }
+
+                }
+                else if (noiseTex.GetPixel(x, y).r > worldChance - 0.045f)
+                {
+                    if (tempText.GetPixel(x, y).r > 0.5)
+                    {
+                            placeTile(sand, x, y,false);
+                    }
+                    else if (tempText.GetPixel(x, y).r > 0.2)
+                    {
+                        placeTile(Water, x, y,false);
+                    }
+                    else
+                    {
+                            placeTile(ice, x, y,false);   
+                    }
+
+
+                }
+
+                else
+                {
+                    if (tempText.GetPixel(x, y).r > 0.6)
+                    {
+                        placeTile(sand, x, y, false);
+                    }
+                    else if (tempText.GetPixel(x, y).r > 0.2)
+                    {
+                        placeTile(Water, x, y,false);
+                    }
+                    else
+                    {
+                        placeTile(ice, x, y, false);
+                    }
+                    
+                }
+                
+            }
+        }
+    }
+    public void GenerateSecondTerrain()
+    {
+        for (int x = 1; x < worldWidth; x++)
+        {
+            for (int y = 1; y < worldHeight; y++)
+            {
+                if (noiseTex.GetPixel(x, y).r > worldChance)
+                {
+                    if (tempText.GetPixel(x, y).r > 0.6)//desert
+                    {
+                        if (tempText.GetPixel(x, y).g > 0.95f)
+                        {
+                            Debug.Log("Special");
+                            placeTile(sandTreasure, x, y, true);
+                        }
+                    }
+                    else if (tempText.GetPixel(x, y).r > 0.3f)//StoneLands
+                    {
+                        if (tempText.GetPixel(x, y).g + Mathf.Sqrt(tempText.GetPixel(x,y).b / 10) > 1.1f)
+                        {
+                            placeTile(tree, x, y, true);
+                        }
+                    }
+                    else //iceLands
+                    {
                         if (tempText.GetPixel(x, y).g > 0.85f)
                         {
                             Debug.Log("SpecialIce");
                             placeTile(iceBrick, x, y, true);
-                        }
-                        else
-                        {
-                            placeTile(ice, x, y, false);
                         }
                     }
 
@@ -124,28 +182,19 @@ public class worldGen : MonoBehaviour
                         if (tempText.GetPixel(x, y).g > 0.95f)
                         {
                             Debug.Log("Special");
-                            placeTile(sandTreasure, x, y,true);
-                        }
-                        else
-                        {
-                            placeTile(sand, x, y,false);
+                            placeTile(sandTreasure, x, y, true);
                         }
                     }
-                    else if (tempText.GetPixel(x, y).r > 0.2)
-                    {
-                        placeTile(Water, x, y,false);
-                    }
-                    else
+                    else if (tempText.GetPixel(x, y).r < 0.2)
                     {
                         if (tempText.GetPixel(x, y).g > 0.85f)
                         {
                             Debug.Log("SpecialIce");
-                            placeTile(iceBrick, x, y,true);
+                            placeTile(iceBrick, x, y, true);
                         }
-                        else
-                        {
-                            placeTile(ice, x, y,false);
-                        }
+                    }
+                    else
+                    {
                     }
 
 
@@ -158,33 +207,20 @@ public class worldGen : MonoBehaviour
                         if (tempText.GetPixel(x, y).g > 0.95f)
                         {
                             Debug.Log("Special");
-                            placeTile(sandTreasure, x, y,true);
-                        }
-                        else
-                        {
-                            placeTile(sand, x, y,false);
+                            placeTile(sandTreasure, x, y, true);
                         }
                     }
-                    else if (tempText.GetPixel(x, y).r > 0.2)
-                    {
-                        placeTile(Water, x, y,false);
-                    }
-                    else
+                    else if (tempText.GetPixel(x, y).r < 0.2)
                     {
                         if (tempText.GetPixel(x, y).g > 0.85f)
                         {
                             Debug.Log("SpecialIce");
-                            placeTile(iceBrick, x, y,true);
+                            placeTile(iceBrick, x, y, true);
                         }
-                        else
-                        {
-                            placeTile(ice, x, y,false);
-                        }
-
                     }
-                    
+
                 }
-                
+
             }
         }
     }
@@ -205,11 +241,27 @@ public class worldGen : MonoBehaviour
         newTile.AddComponent<BoxCollider2D>();
         if (Collide)
         {
+            newTile.AddComponent<Mining>();
+            if (newTile.name == "tree")
+            {
+                placeTile(leaf,x,y,false);
+            }
             newTile.GetComponent<BoxCollider2D>().isTrigger = false;
+            newTile.GetComponent<SpriteRenderer>().sortingOrder = 2;
         }
         else
         {
             newTile.GetComponent<BoxCollider2D>().isTrigger = true;
+            if (newTile.name == "leaf")
+            {
+                //newTile.transform.parent = worldTiles.
+                newTile.GetComponent<SpriteRenderer>().sortingOrder = 3;
+                newTile.AddComponent<LeafScript>();
+            }
+            else
+            {
+                newTile.GetComponent<SpriteRenderer>().sortingOrder = 1;
+            }
         }
         if (Random.Range(0,2) == 1)
         {
