@@ -51,12 +51,13 @@ public class PickUpDrop : MonoBehaviour
                 item.GetComponent<WeaponController>().heldHand = rightHand;
             }
         }
-        //Dropp
+        //Drop
         if (holdingLeft != null && Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl) && pickupDelay <= 0)
         {
             pickupDelay = WaitTime;
             holdingLeft.transform.parent = null;
             holdingLeft.GetComponent<WeaponController>().heldHand = null;
+            leftHand.GetComponent<Animator>().SetInteger("useStyle", 0);
             holdingLeft = null;
         }
         if (holdingRight != null && Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl) && pickupDelay <= 0)
@@ -64,14 +65,15 @@ public class PickUpDrop : MonoBehaviour
             pickupDelay = WaitTime;
             holdingRight.transform.parent = null;
             holdingRight.GetComponent<WeaponController>().heldHand = null;
+            rightHand.GetComponent<Animator>().SetInteger("useStyle", 0);
             holdingRight = null;
         }
         //Use Tool
-        if (holdingLeft != null && Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl))
+        if (holdingLeft != null && Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl))
         {
                 holdingLeft.GetComponent<WeaponController>().Attack();
         }
-        if (holdingRight != null && Input.GetMouseButton(1) && !Input.GetKey(KeyCode.LeftControl))
+        if (holdingRight != null && Input.GetMouseButtonDown(1) && !Input.GetKey(KeyCode.LeftControl))
         {
             holdingRight.GetComponent<WeaponController>().Attack();
         }

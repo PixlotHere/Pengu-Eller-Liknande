@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     #region varPlayer
     private Rigidbody2D rb;
     public float moveSpeed = 5;
-    private float Health = 100;
+    public float Health = 100;
     #endregion
 
     private void Start()
@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-
+            rb.velocity = new Vector2(0, 0);
         }
 
 

@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class LeafScript : MonoBehaviour
 {
-    public worldGen world;
     private Color Opacity;
     // Update is called once per frame
 
+    //private void Start()
+    //{
+    //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player")

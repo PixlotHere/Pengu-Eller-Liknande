@@ -24,24 +24,16 @@ public class WeaponController : MonoBehaviour
     public GameObject projectileOb; //The gameObject of the Projectile
     [Header("Other")]
     public bool attacking = false; //If i am attacking
-    private Collider2D Collide; //Check of the collision.
+    private List<Collider2D> Colliders = new List<Collider2D>();
     // Start is called before the first frame update
     // Update is called once per frame
 
     public void Update()
     {
-        Debug.Log(attacking);
-        if (swingTimer < useSpeed)
+        if (heldHand != null && swingTimer < heldHand.GetComponent<Animator>().speed)
         {
-            swingTimer += Time.fixedDeltaTime;
-        }   
-        if (!attacking)
-        {
-            Collide = null;
+            swingTimer += Time.deltaTime;
         }
- 
-
-
 
     }
     public void Attack()
@@ -55,23 +47,45 @@ public class WeaponController : MonoBehaviour
     private void Swing()
     {
 
-        if (swingTimer >= useSpeed)
+        if (swingTimer >= heldHand.GetComponent<Animator>().speed)
         {
             attacking = true;
+            StartCoroutine(Animate());
             swingTimer = 0;
-            if (weaponClass == "Mining")
+            if (weaponClass == "Mining" && attacking)
             {
-                if (Collide.GetComponent<Mining>())
+                for (int i = 0; i < Colliders.Count; i++)
                 {
-                    Collide.GetComponent<Mining>().health -= CalculateDMG();
+                    Debug.Log(Colliders[i] + ", " + Colliders.Count);
+                    if (Colliders[i] != null && Colliders[i].GetComponent<Mining>())
+                    {
+                        attacking = false;
+                        Colliders[i].GetComponent<Mining>().health -= CalculateDMG();
+
+                    }
+                }
+                
+            }
+            else if (weaponClass == "Placable" && attacking)
+            {
+                attacking = false;
+            }
+            else if (attacking)
+            {
+                for (int i = 0; i < Colliders.Count; i++)
+                {
+                    Debug.Log(Colliders[i] + ", " + Colliders.Count);
+                    if (Colliders[i] != null && Colliders[i].GetComponent<Mining>())
+                    {
+                        attacking = false;
+                        Colliders[i].GetComponent<Mining>().health -= CalculateDMG();
+
+                    }
                 }
             }
-            else
-            {
-
-            }
-            CalculateDMG();
-            StartCoroutine(Animate());
+            //transform.parent.gameObject.transform.localRotation = Quaternion.Euler(heldHand.transform.rotation.eulerAngles.x, heldHand.transform.rotation.eulerAngles.y, 45);
+            //transform.parent.gameObject.transform.localPosition = new Vector2();
+            
         }
 
 
@@ -80,8 +94,7 @@ public class WeaponController : MonoBehaviour
 
     private int CalculateDMG()
     {
-        if (Collide != null)
-        {
+        
             if (Random.Range(1, 100) <= critChance * 100) //crit
             {
                 return Mathf.RoundToInt(dmg * 1.5f * Random.Range(0.95f, 1.05f));
@@ -90,32 +103,39 @@ public class WeaponController : MonoBehaviour
             {
                 return Mathf.RoundToInt(dmg * Random.Range(0.90f, 1.10f));
             }
-        }
-        else
-        {
-            return 0;
-        }
-
     }
 
     public IEnumerator Animate()
     {
-        heldHand.GetComponent<Animator>().speed = ((useSpeed - 1) * -1) + 1;
+        heldHand.GetComponent<Animator>().speed = ((useSpeed - 1) * -1)*2;
         heldHand.GetComponent<Animator>().SetInteger("useStyle", useStyle);
-        yield return new WaitForSeconds(useSpeed);
-        attacking = false;
-        heldHand.GetComponent<Animator>().SetInteger("useStyle", 0);
+        yield return new WaitForSeconds(heldHand.GetComponent<Animator>().speed);
+            attacking = false;
+            if (heldHand.name == "RightHand")
+            {
+                heldHand.localPosition = new Vector3(0.75f, 1.5f, heldHand.parent.transform.position.z);
+            }
+            else
+            {
+                heldHand.localPosition = new Vector3(-0.75f, 1.5f, heldHand.parent.transform.position.z);
+            }
+            heldHand.localRotation = Quaternion.Euler(heldHand.rotation.eulerAngles.x, heldHand.rotation.eulerAngles.y, 45);
+            heldHand.GetComponent<Animator>().SetInteger("useStyle", 0);
+        
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (attacking)
+        if (!Colliders.Contains(collision))
         {
-            Collide = collision;
+            Colliders.Add(collision);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        Collide = null;
+        if (Colliders.Contains(collision))
+        {
+            Colliders.Remove(collision);
+        }
     }
 
 
