@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     #region varPlayer
     private Rigidbody2D rb;
     public float moveSpeed = 5;
-    public float Health = 100;
+    public int Health = 100;
     #endregion
 
     private void Start()

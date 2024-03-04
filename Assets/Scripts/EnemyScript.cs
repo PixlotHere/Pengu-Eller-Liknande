@@ -16,12 +16,14 @@ public class EnemyScript : MonoBehaviour
     public int maxHP;
     public float ViewRange;
     public float speed;
+    public float knockBack;
     [Header("Special Enemy Behavior")]
     public float specialEnemyChance;
     [Header ("Other")]
-    private Vector2 TargetPos;
+    private Vector2 TargetPos = new Vector2(-1, -1);
     private Vector2 PlayerDir;
     private Vector2 TargetDir;
+    private List<Collider2D> Colliders = new List<Collider2D>();
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +65,7 @@ public class EnemyScript : MonoBehaviour
     public void DropLoot()
     {
 
+        Destroy(this.gameObject);
     }
 
     public void AI(int ID)
@@ -73,11 +76,12 @@ public class EnemyScript : MonoBehaviour
 
         if (ID == 1)//Fågel
             {
-                if (TargetPos.x == 0 && TargetPos.y == 0)
+                if (TargetPos.x == -1 && TargetPos.y == -1)
                 {
                     TargetPos = new Vector2(Random.Range(0, world.worldWidth), Random.Range(0, world.worldHeight));
                 }
                 TargetDir = new Vector2(TargetPos.x - transform.position.x, TargetPos.y - transform.position.y).normalized;
+            transform.up = TargetDir * -1;
 
             Debug.Log(TargetPos);
             rb.velocity = TargetDir * speed;
@@ -135,17 +139,35 @@ public class EnemyScript : MonoBehaviour
                         enemyPhase = "Patrol";
                     }
                 }
-                else if (enemyPhase == "Flee")
-                {
-
-                }
                 else
                 {
                     Debug.Log("not a phase, check code");
                     enemyPhase = "Patrol";
                 }
+            for (int i = 0; i < Colliders.Count; i++)
+            {
+                if (Colliders[i] != null && Colliders[i].GetComponent<PlayerController>())
+                {
+                    Colliders[i].GetComponent<Rigidbody2D>().velocity = Colliders[i].GetComponent<Rigidbody2D>().velocity + TargetDir * knockBack;
+                    Colliders[i].GetComponent<PlayerController>().Health -= Mathf.RoundToInt(dmg * Random.Range(0.90f, 1.10f));
 
+                }
             }
+        }
 
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!Colliders.Contains(collision))
+        {
+            Colliders.Add(collision);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (Colliders.Contains(collision))
+        {
+            Colliders.Remove(collision);
+        }
     }
 }

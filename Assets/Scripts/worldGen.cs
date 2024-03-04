@@ -276,8 +276,7 @@ public class worldGen : MonoBehaviour
         {
             for (int y = 0; y < worldTex.height; y++)
             {
-                Debug.Log((x + seed) * noiseFreq);
-                float v = Mathf.PerlinNoise((x + seed) * noiseFreq, (y + seed) * noiseFreq);
+                float v = Mathf.PerlinNoise(((x + Mathf.Sqrt(Mathf.Abs(seed)))* (seed + 0.5f)) * noiseFreq, ((y + Mathf.Sqrt(Mathf.Abs(seed)))* (seed + 0.5f)) * noiseFreq);
                 worldTex.SetPixel(x, y, new Color(v, v, v));
             }
 

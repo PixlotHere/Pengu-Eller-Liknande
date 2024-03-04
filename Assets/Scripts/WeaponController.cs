@@ -75,10 +75,10 @@ public class WeaponController : MonoBehaviour
                 for (int i = 0; i < Colliders.Count; i++)
                 {
                     Debug.Log(Colliders[i] + ", " + Colliders.Count);
-                    if (Colliders[i] != null && Colliders[i].GetComponent<Mining>())
+                    if (Colliders[i] != null && Colliders[i].GetComponent<EnemyScript>())
                     {
                         attacking = false;
-                        Colliders[i].GetComponent<Mining>().health -= CalculateDMG();
+                        Colliders[i].GetComponent<EnemyScript>().hp -= CalculateDMG();
 
                     }
                 }
