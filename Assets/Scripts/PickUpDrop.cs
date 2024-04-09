@@ -69,11 +69,11 @@ public class PickUpDrop : MonoBehaviour
             holdingRight = null;
         }
         //Use Tool
-        if (holdingLeft != null && Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftControl))
+        if (holdingLeft != null && Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftControl))
         {
                 holdingLeft.GetComponent<WeaponController>().Attack();
         }
-        if (holdingRight != null && Input.GetMouseButtonDown(1) && !Input.GetKey(KeyCode.LeftControl))
+        if (holdingRight != null && Input.GetMouseButton(1) && !Input.GetKey(KeyCode.LeftControl))
         {
             holdingRight.GetComponent<WeaponController>().Attack();
         }

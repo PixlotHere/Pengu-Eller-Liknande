@@ -38,7 +38,7 @@ public class WeaponController : MonoBehaviour
     }
     public void Attack()
     {
-        if (transform.parent != null)
+        if (!attacking && transform.parent != null)
         {
             Swing();
         }
@@ -46,9 +46,6 @@ public class WeaponController : MonoBehaviour
 
     private void Swing()
     {
-
-        if (swingTimer >= heldHand.GetComponent<Animator>().speed)
-        {
             attacking = true;
             StartCoroutine(Animate());
             swingTimer = 0;
@@ -59,7 +56,6 @@ public class WeaponController : MonoBehaviour
                     Debug.Log(Colliders[i] + ", " + Colliders.Count);
                     if (Colliders[i] != null && Colliders[i].GetComponent<Mining>())
                     {
-                        attacking = false;
                         Colliders[i].GetComponent<Mining>().health -= CalculateDMG();
 
                     }
@@ -68,16 +64,20 @@ public class WeaponController : MonoBehaviour
             }
             else if (weaponClass == "Placable" && attacking)
             {
-                attacking = false;
+                Instantiate(projectileOb, this.transform.position, this.transform.rotation);
+                Destroy(this.gameObject);
             }
             else if (attacking)
             {
+                if (projectile)
+                {
+                    Instantiate(projectileOb, this.transform.position, this.transform.rotation);
+                }
                 for (int i = 0; i < Colliders.Count; i++)
                 {
                     Debug.Log(Colliders[i] + ", " + Colliders.Count);
                     if (Colliders[i] != null && Colliders[i].GetComponent<EnemyScript>())
                     {
-                        attacking = false;
                         Colliders[i].GetComponent<EnemyScript>().hp -= CalculateDMG();
 
                     }
@@ -85,8 +85,6 @@ public class WeaponController : MonoBehaviour
             }
             //transform.parent.gameObject.transform.localRotation = Quaternion.Euler(heldHand.transform.rotation.eulerAngles.x, heldHand.transform.rotation.eulerAngles.y, 45);
             //transform.parent.gameObject.transform.localPosition = new Vector2();
-            
-        }
 
 
 
@@ -107,9 +105,9 @@ public class WeaponController : MonoBehaviour
 
     public IEnumerator Animate()
     {
-        heldHand.GetComponent<Animator>().speed = ((useSpeed - 1) * -1)*2;
+        heldHand.GetComponent<Animator>().speed = useSpeed;
         heldHand.GetComponent<Animator>().SetInteger("useStyle", useStyle);
-        yield return new WaitForSeconds(heldHand.GetComponent<Animator>().speed);
+        yield return new WaitForSeconds(1/useSpeed);
             attacking = false;
             if (heldHand.name == "RightHand")
             {

@@ -36,7 +36,6 @@ public class worldGen : MonoBehaviour
 
     private GameObject[,] worldChunks;
     private GameObject[,] worldTiles;
-    private GameObject[,] mineTiles;
     public GameObject Player;
 
     public void Awake()
@@ -160,7 +159,6 @@ public class worldGen : MonoBehaviour
     }
     public void GenerateSecondTerrain()
     {
-        mineTiles = new GameObject[worldWidth + 1, worldHeight + 1];
         for (int x = 1; x < worldWidth; x++)
         {
             for (int y = 1; y < worldHeight; y++)
@@ -169,7 +167,7 @@ public class worldGen : MonoBehaviour
                 {
                     if (tempTex.GetPixel(x, y).r > 0.6)//desert
                     {
-                        if (Random.Range(0.00f, 1.00f) > 0.9f)
+                        if (Random.Range(0.00f, 1.00f) > 0.99f)
                         {
                             Debug.Log("Special");
                             placeTile(sandTreasure, x, y, true);
@@ -224,7 +222,7 @@ public class worldGen : MonoBehaviour
                 {
                     if (tempTex.GetPixel(x, y).r > 0.6)
                     {
-                        if (Random.Range(0.00f, 1.00f) > 0.95f)
+                        if (Random.Range(0.00f, 1.00f) > 0.99f)
                         {
                             Debug.Log("Special");
                             placeTile(sandTreasure, x, y, true);
@@ -251,9 +249,12 @@ public class worldGen : MonoBehaviour
     {
         GameObject newTile = Instantiate(tileGO, new Vector3(x, y, 0), this.transform.rotation);
         newTile.isStatic = true;
+        newTile.name = tileGO.name;
         Vector2 ChunkCord = new Vector2((x/chunkSize), (y / chunkSize));
         newTile.transform.parent = worldChunks[Mathf.CeilToInt(ChunkCord.x), Mathf.CeilToInt(ChunkCord.y)].transform;
         newTile.transform.position = new Vector2(x - 1.5f, y - 1.5f);
+
+        
 
         newTile.tag = "tile";
         if (Random.Range(0,2) == 1)

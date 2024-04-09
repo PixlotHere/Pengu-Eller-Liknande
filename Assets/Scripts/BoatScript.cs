@@ -9,6 +9,7 @@ public class BoatScript : MonoBehaviour
     private Collider2D MouseCollide;
     public worldGen terrainGenerator;
     private GameObject player;
+    public GameObject boatItem;
     private float boatSpeed;
     public float maxSpeed = 7;
     private Vector2 oldDirection;
@@ -18,6 +19,7 @@ public class BoatScript : MonoBehaviour
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        terrainGenerator = FindAnyObjectByType<worldGen>();
     }
 
     // Update is called once per frame
@@ -54,7 +56,7 @@ public class BoatScript : MonoBehaviour
 
                 if (Input.GetMouseButton(0) && MouseCollide == null)
                 {
-                    oldDirection = direction.normalized * -1;
+                    oldDirection = direction.normalized;
                     boatSpeed = maxSpeed;
 
                 }
@@ -87,6 +89,7 @@ public class BoatScript : MonoBehaviour
         if (tileCollide)
         {
             //båten ska gå sönder
+            Instantiate(boatItem, this.transform.position, this.transform.rotation);
             Destroy(this.gameObject);
         }
 
@@ -133,7 +136,7 @@ public class BoatScript : MonoBehaviour
 
     private void Movement()
     {
-        rb.velocity = transform.right * -boatSpeed;
+        rb.velocity = transform.right * boatSpeed;
         float angle = Mathf.Atan2(oldDirection.y, oldDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, angle), boatSpeed / maxSpeed * Time.deltaTime);
 

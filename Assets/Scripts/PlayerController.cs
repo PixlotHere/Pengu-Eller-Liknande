@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,12 +10,14 @@ public class PlayerController : MonoBehaviour
     Vector2 slideTowards;
     public float slideSpeed;
     private bool onVehicle = false;
+    public Image healthBar;
 
     private Collider2D Transport;
     public worldGen terrainGenerator;
     #endregion
     #region varPlayer
     private Rigidbody2D rb;
+    public int MaxHealth = 100;
     public float moveSpeed = 5;
     public int Health = 100;
     #endregion
@@ -25,6 +28,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        healthBar.fillAmount = (float)Health / (float)MaxHealth;
         if (moveSpeed * 10 != slideSpeed)
         {
             slideSpeed = moveSpeed * 10;
@@ -50,7 +54,7 @@ public class PlayerController : MonoBehaviour
         float y = 0;
         if (Health >= 0)
         {
-            
+
 
             #region playerMovement
             #region rotation
@@ -59,9 +63,6 @@ public class PlayerController : MonoBehaviour
             MousePos = Camera.main.ScreenToWorldPoint(MousePos);
 
             Vector2 direction = new Vector2(MousePos.x - transform.position.x, MousePos.y - transform.position.y);
-
-            transform.up = direction;
-
             #endregion
             #region Movement
             // Player Dive
@@ -108,11 +109,12 @@ public class PlayerController : MonoBehaviour
             if (transform.parent != null && transform.parent.GetComponent<Rigidbody2D>().velocity != new Vector2(0, 0))
             {
                 rb.velocity = transform.parent.GetComponent<Rigidbody2D>().velocity;
-                
+                transform.position = transform.parent.position;
+                transform.up = transform.parent.GetComponent<Rigidbody2D>().velocity.normalized;
             }
             else
             {
-                
+                transform.up = direction;
                 rb.velocity = new Vector2(x, y).normalized * moveSpeed + slideTowards * slide * slideSpeed / 10;
                 rb.velocity = new Vector2(Mathf.Round(rb.velocity.x/(moveSpeed/10))*(moveSpeed/10), Mathf.Round(rb.velocity.y/ (moveSpeed / 10)) * (moveSpeed / 10));
             }
