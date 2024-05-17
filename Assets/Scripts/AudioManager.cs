@@ -10,19 +10,6 @@ public class AudioManager : MonoBehaviour
     public AudioSource musicSource, sfxSource;
 
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
-    }
     private void Start()
     {
         

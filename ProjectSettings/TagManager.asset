@@ -9,6 +9,7 @@ TagManager:
   - Mouse
   - tile
   - Enemy
+  - water
   layers:
   - Default
   - TransparentFX

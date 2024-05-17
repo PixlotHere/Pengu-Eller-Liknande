@@ -185,7 +185,7 @@ public class EnemyScript : MonoBehaviour
 
                 for (int i = 0; i < hitCount; i++)
                 {
-                    if (hits[i].collider.name != "Water" && hits[i].collider.CompareTag("tile"))
+                    if (hits[i].collider.CompareTag("tile"))
                     {
                         Debug.Log(hits[i].collider.name);
                         i = hitCount;
@@ -227,13 +227,15 @@ public class EnemyScript : MonoBehaviour
                 {
                     float distance;
                     float nearestdistance = 10000;
-                    allobjects = GameObject.FindGameObjectsWithTag("tile");
+                    allobjects = GameObject.FindGameObjectsWithTag("water");
                     for (int j = 0; j < allobjects.Length; j++)
                     {
                         distance = Vector2.Distance(this.transform.position, allobjects[j].transform.position);
 
-                        if (distance < nearestdistance && allobjects[j].name == "Water")
+                        if (distance < nearestdistance && distance > 2)
                         {
+                            int hitCount = Physics2D.RaycastNonAlloc(transform.position,new Vector2(this.transform.position.x - allobjects[j].transform.position.x, this.transform.position.y - allobjects[j].transform.position.y), hits, distance);
+                            
                             closeObject = allobjects[j];
                             nearestdistance = distance;
                         }
